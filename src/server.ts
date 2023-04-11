@@ -28,7 +28,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
   /**************************************************************************** */
-  app.get( "/filteredimage", async ( req, res ) => {
+  app.get( "/filteredimage", async ( req:express.Request, res:express.Response ) => {
     const{ image_url } = req.query;
 
     if ( !image_url )  {
@@ -37,7 +37,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
     }
 
     if ( typeof image_url !== "string" ) {
-      res.status(500).send(`Invalid image url!`);
+      res.status(400).send(`Invalid image url!`);
       return;
     }
 
@@ -48,14 +48,14 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       res.on("finish", () => deleteLocalFiles([filtered_path]));
     } catch ( err ) {
       console.error(err);
-      res.status(400).send(`Can't process this image: ${image_url}`);
+      res.status(500).send(`Can't process this image: ${image_url}`);
     }
   } );
   
   //! END @TODO1
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/", async ( req, res ) => {
+  app.get( "/", async ( req:express.Request, res:express.Response ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
   
