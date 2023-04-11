@@ -29,26 +29,22 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   /**************************************************************************** */
   app.get( "/filteredimage", async ( req:express.Request, res:express.Response ) => {
-    const{ image_url } = req.query;
+    let { image_url } = req.query;
 
     if ( !image_url )  {
-      res.status(400).send(`Image url is required! try GET /filteredimage?image_url={{}}`); 
-      return;
+      res.status(400).send(`image_url query is required!`); 
     }
 
     if ( typeof image_url !== "string" ) {
-      res.status(400).send(`Invalid image url!`);
-      return;
+      res.status(400).send(`image_url must be a string`);
     }
 
     try {
-      const filtered_path:string = await filterImageFromURL(image_url);
-      
-      res.sendFile(filtered_path);
-      res.on("finish", () => deleteLocalFiles([filtered_path]));
+      let filteredpath:string = await filterImageFromURL(image_url);
+      res.sendFile(filteredpath);
+      res.on("finish", () => deleteLocalFiles([filteredpath]));
     } catch ( err ) {
-      console.error(err);
-      res.status(500).send(`Can't process this image: ${image_url}`);
+      res.status(500).send(`Can not process image: ${err}`);
     }
   } );
   
